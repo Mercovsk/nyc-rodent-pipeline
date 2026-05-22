@@ -19,6 +19,15 @@ class Inspection(BaseModel):
     created_at: datetime | None = Field(validation_alias=':created_at')
     updated_at: datetime | None = Field(validation_alias=':updated_at')
 
+    @field_validator('zip_code', mode='before')
+    @classmethod
+    def validate_zip_code(cls, value):
+        if value is None:
+            return None
+        if str(value).strip() == '0':
+            return None
+        return value
+
     @field_validator('latitude', 'longitude', mode='before')
     @classmethod
     def handle_zero_coordinates(cls, value):
