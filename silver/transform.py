@@ -86,7 +86,18 @@ def process_file(filepath: str) -> None:
     
     logger.info(f"Done - inserted/updated: {inserted}, errors: {errors}")
 
+def process_directory(directory: str) -> None:
+    json_files = list(Path(directory).glob("*.json"))
 
+    if not json_files:
+        logger.warning(f"No JSON files found in {directory}")
+
+    logger.info(f"Found {len(json_files)} files to process.")
+
+    for filepath in json_files:
+        logger.info(f"Processing {filepath.name}")
+        process_file(str(filepath))
 
 if __name__ == "__main__":
-    process_file(os.path.join(".", "data", "batch_2026-04-01T09-34-36.420Z_row-hheb.hzi8~fsqx.json"))
+    directory = os.path.join(Path(__file__).parent.parent, "data")
+    process_directory(directory)
