@@ -4,6 +4,8 @@ An end-to-end data pipeline built on AWS using the Medallion Architecture patter
 
 ## Architecture
 
+![Rodent Pipeline Architecture](docs/architecture.png)
+
 ### Bronze Layer
 Raw ingestion via AWS Lambda, scheduled daily with AWS EventBridge. Fetches batches of rodent inspection records from NYC Open Data Socrata API using a watermark pattern backed by AWS DynamoDB to track the latest ingested record. Raw JSON files stored in AWS S3 partitioned by year/month/day.
 
