@@ -19,7 +19,7 @@ Three aggregated analytical tables built from the silver layer using raw SQL and
 ## Pipeline Flow
 
 1. AWS EventBridge triggers the Lambda function daily.
-2. Lamdba fetches new records from NYC Open Data Socrata API in batches of 1000.
+2. Lambda fetches new records from NYC Open Data Socrata API in batches of 1000.
 3. DynamoDB watermark tracks the latest ingested record ID and timestamp.
 4. Raw JSON batches are stored in S3 under `raw/year=/month=/day=`.
 5. `silver/transform.py` reads JSON files, validates with Pydantic, and upserts into PostgreSQL `inspections` table.
