@@ -74,5 +74,5 @@ https://data.cityofnewyork.us/Health/Rodent-Inspection/p937-wjvj/about_data
 | Bronze | ✅ Active | Ingesting daily since February 23, 2026 |
 | Silver | ✅ Active | 10,000+ records validated and loaded |
 | Gold | ✅ Complete | 3 analytical tables built |
-| Architecture Diagram | 🔲 Planned | |
+| Architecture Diagram | ✅ Complete |  |
 | Airflow Orchestration | 🔲 Planned | |
