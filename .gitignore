@@ -1,6 +1,7 @@
 __pycache__/
 *.pyc
 .env
-.env.*
-*env*
 /data
+nyc_rodent_pipeline_env/
+*.egg-info/
+.pytest_cache/
