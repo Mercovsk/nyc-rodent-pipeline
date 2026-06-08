@@ -3,8 +3,8 @@ import logging
 import os
 from pathlib import Path
 
-from db import get_db_connection
-from models import Inspection
+from silver.db import get_db_connection
+from silver.models import Inspection
 from pydantic import ValidationError
 
 logging.basicConfig(level=logging.INFO)
