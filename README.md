@@ -62,6 +62,37 @@ python silver/transform.py
 ### 8. Run the gold layer
 python gold/build_gold.py
 
+## Orchestration
+
+The pipeline is orchestrated using Apache Airflow running locally via Docker.
+
+### DAG: `nyc_rodent_pipeline`
+- **Schedule:** Daily (`0 0 * * *`)
+- **Task:**
+   1. `run_silver_layer` - validates and loads JSON file from `data/raw/` into PostgreSQL
+   2. `run_gold_layer` - aggregates silver data into three gold tables
+- **Dependencies:** Gold layer only runs after silver layer succeeds
+
+### Setup Airflow (First Time Only)
+```bash
+mkdir -p ./dags ./logs ./plugins ./config
+echo "AIRFLOW_UID=$(id -u)" >> .env
+docker-compose -f airflow-docker-compose.yaml up airflow-init
+```
+
+### Start Airflow
+```bash
+docker-compose -f airflow-docker-compose.yaml up -d
+```
+
+UI available at `http://localhost:8080`
+Default credentials: `airflow` / `airflow`
+
+### Notes
+- Airflow uses a separate PostgreSQL instance on port 5433 for metadata
+- Project files are mounted at `/opt/airflow/pipeline` inside the container
+- Place new JSON files in `/data` before triggering a manual run
+
 ## Data Source
 
 NYC Open Data — Rodent Inspection Dataset
@@ -76,3 +107,6 @@ https://data.cityofnewyork.us/Health/Rodent-Inspection/p937-wjvj/about_data
 | Gold | ✅ Complete | 3 analytical tables built |
 | Architecture Diagram | ✅ Complete |  |
 | Airflow Orchestration | 🔲 Planned | |
+
+
+Airflow's metadata Postgres Localhost port is changed into 5433 due to project's silver and gold Postgres
