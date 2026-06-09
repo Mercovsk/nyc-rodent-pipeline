@@ -14,7 +14,7 @@ default_args = {
 
 def run_silver_layer():
     from silver.transform import process_directory
-    data_dir = os.path.join('/opt/airflow/pipeline', 'data')
+    data_dir = os.path.join('/opt/airflow/pipeline', 'data', 'raw')
     process_directory(data_dir)
 
 

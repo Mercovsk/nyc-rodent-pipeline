@@ -2,6 +2,7 @@ import json
 import logging
 import os
 from pathlib import Path
+import shutil
 
 from silver.db import get_db_connection
 from silver.models import Inspection
@@ -61,9 +62,21 @@ def upsert_record(cur, record: Inspection) -> None:
             record.created_at,
             record.updated_at
         ))
+    
+def write_error_file(original_filepath: str, failed_records: list) -> None:
+    original_path = Path(original_filepath)
+    error_dir = original_path.parent.parent / "error"
+    error_dir.mkdir(exist_ok=True)
+
+    error_filepath = error_dir / f"error_{original_path.name}"
+    with open(error_filepath, "w") as f:
+        json.dump(failed_records, f, indent=2, default=str)
+
+    logger.info(f"Written {len(failed_records)} failed records to {error_filepath}")
 
 def process_file(filepath: str) -> None:
     raw_records = load_json(filepath)
+    failed_records = []
     inserted = 0
     errors = 0
 
@@ -75,19 +88,31 @@ def process_file(filepath: str) -> None:
                     upsert_record(cur, record)
                     inserted += 1
                 except ValidationError as e:
-                    logger.error(f"Validation failed for {raw.get(':id')}: {e}")
+                    logger.warning(f"Validation failed for {raw.get(':id')}: {e}")
+                    raw['_error'] = str(e)
+                    raw['_error_type'] = 'ValidationError'
+                    failed_records.append(raw)
                     errors += 1
                 except Exception as e:
                     logger.error(f"DB error for {raw.get(':id')}: {e}")
+                    raw['_error'] = str(e)
+                    raw['_error_type'] = 'DBError'
+                    failed_records.append(raw)
                     conn.rollback()
                     errors += 1
 
         conn.commit()
+
+    # Write failed records to a separate file in error folder for future analysis
+    if failed_records:
+        write_error_file(filepath, failed_records)
     
     logger.info(f"Done - inserted/updated: {inserted}, errors: {errors}")
 
 def process_directory(directory: str) -> None:
     json_files = list(Path(directory).glob("*.json"))
+    processed_dir = Path(directory).parent / "processed"
+    processed_dir.mkdir(exist_ok=True)
 
     if not json_files:
         logger.warning(f"No JSON files found in {directory}")
@@ -98,6 +123,10 @@ def process_directory(directory: str) -> None:
         logger.info(f"Processing {filepath.name}")
         process_file(str(filepath))
 
+        # Move to processed folder after successful digestion
+        shutil.move(str(filepath), processed_dir / filepath.name)
+        logger.info(f"Moved {filepath.name} to {processed_dir}")
+
 if __name__ == "__main__":
-    directory = os.path.join(Path(__file__).parent.parent, "data")
+    directory = os.path.join(Path(__file__).parent.parent, "data", "raw")
     process_directory(directory)
