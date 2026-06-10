@@ -12,3 +12,6 @@ nyc_rodent_pipeline_env/
 .pytest_cache/
 logs/
 config/airflow.cfg
+dbt/profiles.yml
+dbt/target/
+.user.yml

@@ -1,0 +1,12 @@
+name: nyc_rodent_pipeline
+version: '1.0.0'
+profile: nyc_rodent_pipeline
+
+model-paths: ["models"]
+test-paths: ["tests"]
+
+models:
+  nyc_rodent_pipeline:
+    gold:
+      +materialized: table
+      +schema: gold

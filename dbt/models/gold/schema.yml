@@ -1,0 +1,105 @@
+models:
+  - name: borough_rodent_summary
+    columns:
+      - name: borough
+        data_tests:
+          - not_null
+          - unique
+      - name: total_inspections
+        data_tests:
+          - not_null
+      - name: passed
+        data_tests:
+          - not_null
+      - name: pass_rate
+        data_tests:
+          - not_null
+      - name: failed
+        data_tests:
+          - not_null
+      - name: fail_rate
+        data_tests:
+          - not_null
+      - name: treated
+        data_tests:
+          - not_null
+      - name: treated_rate
+        data_tests:
+          - not_null
+      - name: monitoring
+        data_tests:
+          - not_null
+      - name: monitoring_rate
+        data_tests:
+          - not_null
+      - name: last_inspection_date
+        data_tests:
+          - not_null
+  
+  - name: monthly_inspection_trends
+    columns:
+      - name: year
+        data_tests:
+          - not_null
+      - name: month
+        data_tests:
+          - not_null
+      - name: borough
+        data_tests:
+          - not_null
+      - name: total_inspections
+        data_tests:
+          - not_null
+      - name: passed
+        data_tests:
+          - not_null
+      - name: pass_rate
+        data_tests:
+          - not_null
+      - name: failed
+        data_tests:
+          - not_null
+      - name: fail_rate
+        data_tests:
+          - not_null
+      - name: treated
+        data_tests:
+          - not_null
+      - name: treated_rate
+        data_tests:
+          - not_null
+      - name: monitoring
+        data_tests:
+          - not_null
+      - name: monitoring_rate
+        data_tests:
+          - not_null
+
+  - name: zipcode_hotspots
+    columns:
+      - name: zip_code
+        data_tests:
+          - not_null
+      - name: borough
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: ['Bronx', 'Brooklyn', 'Manhattan', 'Queens', 'Staten Island']
+      - name: total_inspections
+        data_tests:
+          - not_null
+      - name: failed
+        data_tests:
+          - not_null
+      - name: fail_rate
+        data_tests:
+          - not_null
+      - name: treated
+        data_tests:
+          - not_null
+      - name: treated_rate
+        data_tests:
+          - not_null
+      - name: infestation_score
+        data_tests:
+          - not_null
