@@ -93,6 +93,70 @@ Default credentials: `airflow` / `airflow`
 - Project files are mounted at `/opt/airflow/pipeline` inside the container
 - Place new JSON files in `/data` before triggering a manual run
 
+## Data Transformation (dbt)
+
+The gold layer is also implemented using dbt for automated transformation, testing, and documentation.
+
+### Models
+|
+Models
+|
+Description
+|
+|
+---
+|
+---
+|
+|
+`borough_rodent_summary`
+|
+Borough-level aggregation inspection results
+|
+|
+`monthly_inspection_trends`
+|
+Monthly inpsection counts and rates per borough
+|
+|
+`zipcode_hotspots`
+|
+Zip code level infestation scoring
+|
+
+### Setup
+Install dbt dependencies:
+\``` bash
+pip install dbt-core==1.8.0 dbt-postgres==1.8.0
+\```
+
+Create `dbt/profile.yml` from the example
+\```bash
+cp dbt/profiles.yml.example dbt/profiles.yml
+# Edit with your database credentials
+\```
+
+### Run dbt
+\```bash
+cd dbt
+
+# Build gold layer tables
+dbt run
+
+# Run data quality tests
+dbt test
+
+# Generate and serve documentation
+dbt docs generate
+dbt docs serve
+\```
+
+### Tests
+33 automated data quality tests covering:
+- `not_null` constraints on all key columns
+- `unique` constraints on borough in borough_rodent_summary
+- `accepted_values` for borough in zipcode_hotspots
+
 ## Data Source
 
 NYC Open Data — Rodent Inspection Dataset
@@ -106,7 +170,5 @@ https://data.cityofnewyork.us/Health/Rodent-Inspection/p937-wjvj/about_data
 | Silver | ✅ Active | 10,000+ records validated and loaded |
 | Gold | ✅ Complete | 3 analytical tables built |
 | Architecture Diagram | ✅ Complete |  |
-| Airflow Orchestration | 🔲 Planned | |
-
-
-Airflow's metadata Postgres Localhost port is changed into 5433 due to project's silver and gold Postgres
+| Airflow Orchestration | ✅ Complete | |
+| dbt Gold Layer | ✅ Complete | 3 models, 33 tests passing |
